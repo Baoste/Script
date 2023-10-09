@@ -3,10 +3,6 @@ const CLASSTIME = [
     "8:00-8:50", "9:00-9:50", "10:10-11:00", "11:10-12:00", "13:30-14:20", "14:20-15:10", "15:20-16:10", "16:10-17:00", "18:00-18:50", "19:00-19:50", "20:00-20:50", "21:00-21:50"
 ];
 
-Date.prototype.clone = () => {
-    return new Date(this.valueOf())
-}
-
 function date_to_string(date) {
     return date.getFullYear().toString() + (date.getMonth()+1).toString().padStart(2,0) + date.getDate().toString().padStart(2,0)+ "T" + date.getHours().toString().padStart(2,0) + date.getMinutes().toString().padStart(2,0) + date.getSeconds().toString().padStart(2,0);
 }
