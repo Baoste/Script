@@ -54,12 +54,6 @@ function Class(classname, room) {
 function Vcalendar() {
     this.METHOD = "PUBLISH";
     this.VERSION = "2.0";
-    this.VTIMEZONE = {
-        TZID: "Asia/Beijing",
-        TZNAME: "CST",
-        TZOFFSETFROM: "+0800",
-        TZOFFSETTO: "+0800"
-    };
     this.VEVENT = new Array();
     this.add_vevent = (nevent) => {
         this.VEVENT.push(nevent);
@@ -67,13 +61,7 @@ function Vcalendar() {
     this.toString = () => {
         var res = "BEGIN:VCALENDAR\n";
         for (let key in this) {
-            if (key == "VTIMEZONE") {
-                res += "BEGIN:VTIMEZONE\n";
-                for (let k in this[key]) {
-                    res += k + ":" + this[key][k] + "\n";
-                }
-                res += "END:VTIMEZONE\n";
-            } else if (key == "VEVENT") {
+            if (key == "VEVENT") {
                 for (let k in this[key]) {
                     res += "BEGIN:VEVENT\n";
                     res += this[key][k];
@@ -98,11 +86,7 @@ function Vevent(start, end, summary, location, until) {
     this.toString = () => {
         var res = new String();
         for (let key in this) {
-            if (key == "DTSTART" || key == "DTEND") {
-                res += key + ";TZID=Asia/Beijing:" + this[key] + "\n"
-            } else if (typeof(this[key]) == "string") {
-                res += key + ":" + this[key] + "\n";
-            }
+            res += key + ":" + this[key] + "\n";
         }
         return res;
     };
@@ -133,11 +117,13 @@ function main() {
         var classname = $('.mtt_item_kcmc')[i].innerText;
         var room = $('.mtt_item_room')[i].innerText;
         var cucclass = new Class(classname, room);
-        if (classList.indexOf(cucclass.classid) == -1 && room.split(',').length == 4) {
-            classList.push(cucclass.classid);
+        if (room.split(',').length == 4) {
             cucclass.init();
-            var vevent = new Vevent(cucclass.classStart, cucclass.classEnd, cucclass.classname, cucclass.location, cucclass.endTime);
-            vcalendar.add_vevent(vevent.toString());
+            if (classList.indexOf(cucclass.classid + cucclass.classStart) == -1) {
+                classList.push(cucclass.classid + cucclass.classStart);
+                var vevent = new Vevent(cucclass.classStart, cucclass.classEnd, cucclass.classname, cucclass.location, cucclass.endTime);
+                vcalendar.add_vevent(vevent.toString());
+            }
         }
     }
     to_file(vcalendar.toString());
