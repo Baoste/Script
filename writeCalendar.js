@@ -24,7 +24,7 @@ function Class(classname, room) {
         var week = room.split(',')[0].split(/(\d+)-(\d+)周/)[2];
         var day = room.split(',')[1].split(/星期(\d)/)[1] - 1;
         var t = new Date(startTime);
-        t.setDate(startTime.getDate() + 7*week + day);
+        t.setDate(startTime.getDate() + 7*week + day + 1);
         this.endTime = t;
     };
     this.set_class_start = () => {
@@ -86,7 +86,9 @@ function Vevent(start, end, summary, location, until) {
     this.toString = () => {
         var res = new String();
         for (let key in this) {
-            res += key + ":" + this[key] + "\n";
+            if (typeof(this[key]) == "string") {
+                res += key + ":" + this[key] + "\n";
+            }
         }
         return res;
     };
@@ -116,8 +118,14 @@ function main() {
     for (let i = 0; i < num; i++) {
         var classname = $('.mtt_item_kcmc')[i].innerText;
         var room = $('.mtt_item_room')[i].innerText;
-        var cucclass = new Class(classname, room);
-        if (room.split(',').length == 4) {
+        var infolist = room.split(',');
+        var listlen = infolist.length;
+        for (let j = 0; j < listlen - 3; j++) {
+            if (!(/\d+-\d+周/.test(infolist[j]))) {
+                infolist[j] = infolist[j].slice(0,-1) + "-" + infolist[j];
+            }
+            room = infolist[j] + "," + infolist.slice(listlen-3, listlen);
+            var cucclass = new Class(classname, room);
             cucclass.init();
             if (classList.indexOf(cucclass.classid + cucclass.classStart) == -1) {
                 classList.push(cucclass.classid + cucclass.classStart);
