@@ -1,6 +1,6 @@
 var startTime = new Date(2023, 8, 4);
 const CLASSTIME = [
-    "8:00-8:50", "9:00-9:50", "10:10-11:00", "11:10-12:00", "13:30-14:20", "14:20-15:10", "15:20-16:10", "16:10-17:00", "18:00-18:50", "19:00-19:50", "20:00-20:50", "21:00-21:50"
+    "8:00-8:50", "9:00-9:50", "10:10-11:00", "11:10-12:00", "13:30-14:20", "14:20-15:10", "15:20-16:10", "16:10-16:50", "18:00-18:50", "19:00-19:50", "20:00-20:50", "21:00-21:50"
 ];
 
 function date_to_string(date) {
@@ -16,7 +16,7 @@ function Class(classname, room) {
         var week = room.split(',')[0].split(/(\d+)-(\d+)周/)[1];
         var day = room.split(',')[1].split(/星期(\d)/)[1] - 1;
         var t = new Date(startTime);
-        t.setDate(startTime.getDate() + 7*week + day);
+        t.setDate(startTime.getDate() + 7*(week-1) + day);
         this.startTime = t;
     };
     
@@ -24,7 +24,7 @@ function Class(classname, room) {
         var week = room.split(',')[0].split(/(\d+)-(\d+)周/)[2];
         var day = room.split(',')[1].split(/星期(\d)/)[1] - 1;
         var t = new Date(startTime);
-        t.setDate(startTime.getDate() + 7*week + day + 1);
+        t.setDate(startTime.getDate() + 7*(week-1) + day + 1);
         this.endTime = t;
     };
     this.set_class_start = () => {
