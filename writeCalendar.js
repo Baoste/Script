@@ -1,4 +1,4 @@
-var startTime = new Date(2023, 8, 4);
+var startTime = new Date(2024, 8, 4);
 const CLASSTIME = [
     "8:00-8:50", "9:00-9:50", "10:10-11:00", "11:10-12:00", "13:30-14:20", "14:20-15:10", "15:20-16:10", "16:10-16:50", "18:00-18:50", "19:00-19:50", "20:00-20:50", "21:00-21:50"
 ];
@@ -120,8 +120,28 @@ function main() {
         var room = $('.mtt_item_room')[i].innerText;
         var infolist = room.split(',');
         var listlen = infolist.length;
+        var wtmp = [];
+
+        // 将 n周(单/双) 具体分开
         for (let j = 0; j < listlen - 3; j++) {
-            if (!(/\d+-\d+周/.test(infolist[j]))) {
+            if (/\d+周\(.\)/.test(infolist[j])) {
+                let ws = infolist[j].split(/(\d+)-(\d+)周/)[1] - 0;
+                let we = infolist[j].split(/(\d+)-(\d+)周/)[2] - 0;
+                for (let w = ws; w <= we; w += 2) {
+                    wtmp.push(w + '周');
+                }
+                infolist.splice(j, 1);
+            }
+        }
+        if (wtmp.length != 0) {
+            infolist = wtmp.concat(infolist);
+            listlen = infolist.length;
+            wtmp = [];
+        }
+
+        for (let j = 0; j < listlen - 3; j++) {
+            if (/^\d+周/.test(infolist[j])) {
+                // 将 n周 转化成 n-n周
                 infolist[j] = infolist[j].slice(0,-1) + "-" + infolist[j];
             }
             room = infolist[j] + "," + infolist.slice(listlen-3, listlen);
